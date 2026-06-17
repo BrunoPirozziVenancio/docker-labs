@@ -1,15 +1,15 @@
 # docker-labs
 
-Projetos práticos com Docker e Docker Compose para estudo e portfólio.
+Projetos praticos com Docker e Docker Compose para estudo e portfolio.
 
 ## Estrutura
 
 ### Dockerfiles
-- **python-app** — Aplicação Python Flask containerizada com Docker
+- python-app: aplicacao Python Flask containerizada com Docker
 
 ### Docker Compose
-- **node-mongo** — Stack Node.js + MongoDB com Docker Compose
-- **nginx-web** — Servidor Nginx servindo conteúdo estático
+- node-mongo: stack Node.js com MongoDB
+- nginx-web: servidor Nginx servindo conteudo estatico
 
 ## Tecnologias
 
