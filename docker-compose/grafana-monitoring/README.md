@@ -2,6 +2,12 @@
 
 Stack completa de observabilidade simulando 5 servidores com Docker Compose, monitorados pelo Prometheus e Grafana.
 
+Este projeto faz parte de uma serie de 3 implementacoes do mesmo sistema de monitoramento em ambientes diferentes. O dashboard e identico nas 3 versoes, o que muda e onde a infraestrutura roda:
+
+- docker-compose (este projeto): tudo roda localmente na sua maquina, ideal para testes e estudo
+- aws-infra/terraform/aws-grafana-monitoring: os servidores sao instancias EC2 reais na AWS
+- oci-infra/terraform/projects/oci-grafana-monitoring: os servidores sao instancias Compute reais na OCI
+
 ## Arquitetura
 
 - srv-database: MySQL 8.0 simulando servidor de banco de dados
@@ -14,7 +20,7 @@ Stack completa de observabilidade simulando 5 servidores com Docker Compose, mon
 ## Metricas monitoradas
 
 - Disponibilidade de cada container
-- CPU: percentual de uso e load average
+- CPU: percentual de uso e load average (1m, 5m, 15m)
 - RAM: total, usada e disponivel
 - Disco: uso percentual, leitura/escrita e IOPS
 - Rede: trafego de entrada e saida
