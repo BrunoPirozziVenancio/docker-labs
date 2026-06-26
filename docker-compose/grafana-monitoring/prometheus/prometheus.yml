@@ -1,0 +1,45 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: node-exporter
+    static_configs:
+      - targets: ['node-exporter:9100']
+        labels:
+          server: host
+
+  - job_name: database
+    static_configs:
+      - targets: ['database:9104']
+        labels:
+          server: database
+          role: database
+
+  - job_name: proxy
+    static_configs:
+      - targets: ['proxy:9113']
+        labels:
+          server: proxy
+          role: proxy
+
+  - job_name: backend-1
+    static_configs:
+      - targets: ['backend-1:9100']
+        labels:
+          server: backend-1
+          role: backend
+
+  - job_name: backend-2
+    static_configs:
+      - targets: ['backend-2:9100']
+        labels:
+          server: backend-2
+          role: backend
+
+  - job_name: backend-3
+    static_configs:
+      - targets: ['backend-3:9100']
+        labels:
+          server: backend-3
+          role: backend

@@ -1,0 +1,130 @@
+version: '3.8'
+
+services:
+  database:
+    image: mysql:8.0
+    container_name: srv-database
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: appdb
+      MYSQL_USER: appuser
+      MYSQL_PASSWORD: apppass
+    volumes:
+      - db-data:/var/lib/mysql
+    networks:
+      - monitoring-net
+    restart: always
+
+  backend-1:
+    build: ./app
+    container_name: srv-backend-1
+    environment:
+      DB_HOST: database
+      DB_USER: appuser
+      DB_PASS: apppass
+      DB_NAME: appdb
+      SERVER_NAME: backend-1
+    depends_on:
+      - database
+    networks:
+      - monitoring-net
+    restart: always
+
+  backend-2:
+    build: ./app
+    container_name: srv-backend-2
+    environment:
+      DB_HOST: database
+      DB_USER: appuser
+      DB_PASS: apppass
+      DB_NAME: appdb
+      SERVER_NAME: backend-2
+    depends_on:
+      - database
+    networks:
+      - monitoring-net
+    restart: always
+
+  backend-3:
+    build: ./app
+    container_name: srv-backend-3
+    environment:
+      DB_HOST: database
+      DB_USER: appuser
+      DB_PASS: apppass
+      DB_NAME: appdb
+      SERVER_NAME: backend-3
+    depends_on:
+      - database
+    networks:
+      - monitoring-net
+    restart: always
+
+  proxy:
+    image: nginx:alpine
+    container_name: srv-proxy
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend-1
+      - backend-2
+      - backend-3
+    networks:
+      - monitoring-net
+    restart: always
+
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: node-exporter
+    pid: host
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+    networks:
+      - monitoring-net
+    restart: always
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus-data:/prometheus
+    ports:
+      - "9090:9090"
+    networks:
+      - monitoring-net
+    restart: always
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning
+      - ./grafana/dashboards:/var/lib/grafana/dashboards
+      - grafana-data:/var/lib/grafana
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: admin
+    depends_on:
+      - prometheus
+    networks:
+      - monitoring-net
+    restart: always
+
+networks:
+  monitoring-net:
+    driver: bridge
+
+volumes:
+  db-data:
+  prometheus-data:
+  grafana-data:
